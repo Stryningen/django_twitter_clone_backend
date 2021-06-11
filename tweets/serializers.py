@@ -24,3 +24,20 @@ class TweetSerializer(serializers.ModelSerializer):
             "tweet_created",
             "tweet_updated",
         ]
+
+
+class ReTweetSerializer(serializers.ModelSerializer):
+
+    tweet_user = UserSerializer(read_only=True)
+    tweet_parent = TweetSerializer(read_only=True)
+
+    class Meta:
+        model = Tweet
+        fields = [
+            "id",
+            "tweet_user",
+            "tweet_text",
+            "tweet_image",
+            "tweet_created",
+            "tweet_updated",
+        ]

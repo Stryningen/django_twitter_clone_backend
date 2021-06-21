@@ -20,7 +20,19 @@ ACTIONS = settings.TWEET_ACTIONS
 
 
 class TweetView(APIView):
-    def get(self, request, format=None):
+    def get(self, request, format=None, *args, **kwargs):
+
+        if self.kwargs:
+            id = self.kwargs["tweet_id"]
+            tweet = Tweet.objects.filter(pk=id).first()
+            print(tweet)
+            if not tweet:
+                return Response(
+                    {"message": "tweet not found"}, status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = TweetSerializer(tweet)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         tweets = Tweet.objects.all().order_by("-tweet_created")
         serializer = TweetSerializer(tweets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -69,8 +81,6 @@ class TweetActionView(APIView):
 
                 action_tweet = Tweet.objects.get(pk=id)
 
-                print(action)
-
                 if not action_tweet:
                     return Response(
                         {"error": "tweet not found"}, status=status.HTTP_404_NOT_FOUND
@@ -97,16 +107,13 @@ class TweetActionView(APIView):
                     )
 
                 if action == "retweet":
-                    retweet = Tweet(
-                        tweet_user=user, tweet_text=content, tweet_parent=action_tweet
+                    retweet = Tweet.objects.create(
+                        tweet_user=user, tweet_text="retweet", tweet_parent=action_tweet
                     )
                     retweet_serializer = ReTweetSerializer(retweet)
-                    if retweet_serializer.is_valid():
-                        print(retweet_serializer.data)
-                        print("success")
-
-                    if not retweet_serializer.is_valid():
-                        print(retweet_serializer.errors)
+                    return Response(
+                        retweet_serializer.data, status=status.HTTP_201_CREATED
+                    )
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

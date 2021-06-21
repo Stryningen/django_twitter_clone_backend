@@ -45,6 +45,7 @@ class ReTweetSerializer(serializers.ModelSerializer):
 
     tweet_user = UserSerializer(read_only=True)
     tweet_parent = TweetSerializer(read_only=True)
+    tweet_likes = serializers.SerializerMethodField()
 
     class Meta:
         model = Tweet
@@ -54,9 +55,13 @@ class ReTweetSerializer(serializers.ModelSerializer):
             "tweet_parent",
             "tweet_text",
             "tweet_image",
+            "tweet_likes",
             "tweet_created",
             "tweet_updated",
         ]
+
+    def get_tweet_likes(self, tweet):
+        return tweet.tweet_likes.count()
 
 
 class TweetActionSerializer(serializers.Serializer):

@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["username", "id"]
 
 
-class TweetSerializer(serializers.ModelSerializer):
+class TweetCreateSerializer(serializers.ModelSerializer):
     tweet_user = UserSerializer(read_only=True)
     tweet_likes = serializers.SerializerMethodField()
 
@@ -41,10 +41,10 @@ class TweetLikeSerializer(serializers.ModelSerializer):
         fields = ["user", "tweet", "time_stamp"]
 
 
-class ReTweetSerializer(serializers.ModelSerializer):
+class TweetSerializer(serializers.ModelSerializer):
 
     tweet_user = UserSerializer(read_only=True)
-    tweet_parent = TweetSerializer(read_only=True)
+    tweet_parent = TweetCreateSerializer(read_only=True)
     tweet_likes = serializers.SerializerMethodField()
 
     class Meta:

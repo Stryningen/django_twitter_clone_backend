@@ -5,10 +5,9 @@ from rest_framework import status
 from api_authentication.utils import getUser
 from tweets.models import Tweet, TweetLike
 from tweets.serializers import (
-    TweetSerializer,
     TweetActionSerializer,
     TweetLikeSerializer,
-    ReTweetSerializer,
+    TweetSerializer,
 )
 
 from django.conf import settings
@@ -110,7 +109,7 @@ class TweetActionView(APIView):
                     retweet = Tweet.objects.create(
                         tweet_user=user, tweet_text="retweet", tweet_parent=action_tweet
                     )
-                    retweet_serializer = ReTweetSerializer(retweet)
+                    retweet_serializer = TweetSerializer(retweet)
                     return Response(
                         retweet_serializer.data, status=status.HTTP_201_CREATED
                     )

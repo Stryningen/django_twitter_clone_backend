@@ -107,7 +107,7 @@ class TweetActionView(APIView):
 
                 if action == "retweet":
                     retweet = Tweet.objects.create(
-                        tweet_user=user, tweet_text="retweet", tweet_parent=action_tweet
+                        tweet_user=user, tweet_text=content, tweet_parent=action_tweet
                     )
                     retweet_serializer = TweetSerializer(retweet)
                     return Response(

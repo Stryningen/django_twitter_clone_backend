@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # local apps
     "tweets.apps.TweetsConfig",
     "api_authentication.apps.ApiAuthenticationConfig",
+    "profiles.apps.ProfilesConfig",
 ]
 
 MIDDLEWARE = [
@@ -111,6 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "api_authentication.CostumUser"
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -142,4 +145,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 TWEET_ACTIONS = {
     "like",
     "retweet",
+}
+
+PROFILE_ACTIONS = {
+    "follow",
+    "unfollow",
+    "friend",
+    "unfriend",
+    "friend_request",
+    "block",
+    "unblock",
 }

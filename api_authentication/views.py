@@ -4,7 +4,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import status
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 from api_authentication.serializers import (
     UserSerializer,
@@ -14,6 +14,8 @@ from api_authentication.serializers import (
 import datetime
 
 # Create your views here.
+
+User = get_user_model()
 
 
 class UserView(APIView):

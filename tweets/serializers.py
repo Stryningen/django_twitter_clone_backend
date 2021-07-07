@@ -1,21 +1,15 @@
-from django.contrib.auth.models import User
+from django.conf import settings
 
 from rest_framework import serializers
 
 from tweets.models import Tweet, TweetLike
-from django.conf import settings
+from api_authentication.serializers import UserFieldSerializer
 
 ACTIONS = settings.TWEET_ACTIONS
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["username", "id"]
-
-
 class TweetCreateSerializer(serializers.ModelSerializer):
-    tweet_user = UserSerializer(read_only=True)
+    tweet_user = UserFieldSerializer(read_only=True)
     tweet_likes = serializers.SerializerMethodField()
 
     class Meta:
@@ -43,7 +37,7 @@ class TweetLikeSerializer(serializers.ModelSerializer):
 
 class TweetSerializer(serializers.ModelSerializer):
 
-    tweet_user = UserSerializer(read_only=True)
+    tweet_user = UserFieldSerializer(read_only=True)
     tweet_parent = TweetCreateSerializer(read_only=True)
     tweet_likes = serializers.SerializerMethodField()
 

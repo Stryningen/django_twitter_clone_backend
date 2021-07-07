@@ -24,7 +24,6 @@ class TweetView(APIView):
         if self.kwargs:
             id = self.kwargs["tweet_id"]
             tweet = Tweet.objects.filter(pk=id).first()
-            print(tweet)
             if not tweet:
                 return Response(
                     {"message": "tweet not found"}, status=status.HTTP_404_NOT_FOUND

@@ -13,16 +13,17 @@ class CostumUserManager(BaseUserManager):
 
     """Basic Manager for CostumUser"""
 
-    def create_user(self, username, password, **extra_fields):
+    def create_user(self, username, password, email=None, **extra_fields):
         """
         Creates costum user and sets a auth token.
         """
-        user = self.model(username=username)
+
+        user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, username, password):
+    def create_superuser(self, username, password, **extra_fields):
         """
         Creates superuser and sets a auth token.
         """

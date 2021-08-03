@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 
 from api_authentication.serializers import (
     UserSerializer,
+    UserFieldSerializer,
     UserSerializerNoPasswordValidation,
 )
 
@@ -34,10 +35,13 @@ class UserView(APIView):
             u.set_password(password)
             u.save()
             return Response(
-                {"message": f"user {username} created"}, status=status.HTTP_201_CREATED
+                {"result": {"message": f"user {username} created"}},
+                status=status.HTTP_201_CREATED,
             )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class CustomAuthTokenView(ObtainAuthToken):
@@ -51,12 +55,11 @@ class CustomAuthTokenView(ObtainAuthToken):
 
             if not created:
                 token.created = datetime.datetime.now()
-            user = serializer.validated_data["user"]
-            return Response(
-                {
-                    "token": token.key,
-                    "user": user.username,
-                }
-            )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            data = {"username": user.username, "id": user.id, "token": token.key}
+
+            return Response({"result": data}, status=status.HTTP_200_OK)
+
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )

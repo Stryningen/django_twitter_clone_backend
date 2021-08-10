@@ -5,7 +5,11 @@ from rest_framework import status
 from api_authentication.utils import getUser
 from profiles.models import Profile, Follower
 
-from profiles.serializers import ProfileSerializer
+from profiles.serializers import (
+    ProfileSerializer,
+    ProfileCreateSerializer,
+    ProfileUpdateSerializer,
+)
 
 from django.conf import settings
 
@@ -42,14 +46,24 @@ class ProfileView(APIView):
             token = token.split(" ")[1]
             user = getUser(token)
 
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(profile_user=user)
-            return Response(
-                {"result": serializer.data},
-                status=status.HTTP_201_CREATED,
-            )
+        profile = Profile.objects.filter(profile_user=user).first()
+        if profile:
+            serializer = ProfileUpdateSerializer(profile, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"result": serializer.data},
+                    status=status.HTTP_201_CREATED,
+                )
+        else:
+            serializer = ProfileCreateSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(profile_user)
+                return Response(
+                    {"result": serializer.data},
+                    status=status.HTTP_201_CREATED,
+                )
 
-            return Response(
-                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-            )
+        return Response(
+            {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )

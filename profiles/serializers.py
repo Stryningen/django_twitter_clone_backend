@@ -1,4 +1,5 @@
 from django.conf import settings
+from datetime import datetime
 
 from rest_framework import serializers
 
@@ -55,3 +56,11 @@ class ProfileActionSerializer(serializers.Serializer):
         if not action in ACTIONS:
             return serializers.ValidationError("not a valid action")
         return action
+
+
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            "profile_bio",
+        ]

@@ -65,7 +65,6 @@ class TweetActionView(APIView):
     def post(self, request, format=None):
 
         token = request.headers.get("Authorization")
-
         if token:
             serializer = TweetActionSerializer(data=request.data)
             token = token.split(" ")[1]

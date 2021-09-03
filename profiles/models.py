@@ -29,7 +29,7 @@ class Follower(models.Model):
     time_stamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"<Follower(follower: {self.follower.username}, following: {self.following.username})"
+        return f"<Follower(follower: {self.follower.profile_user.username}, following: {self.following.profile_user.username})"
 
 
 class Profile(models.Model):

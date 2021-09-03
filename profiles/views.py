@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -16,7 +18,7 @@ from django.conf import settings
 
 # Create your views here.
 
-User = settings.AUTH_USER_MODEL
+User = get_user_model()
 
 
 class ProfileView(APIView):
@@ -126,7 +128,7 @@ class FollowerView(APIView):
 
         token = request.headers.get("Authorization")
         data = request.data
-        following_user_id = data["following_id"]
+        following_user_id = int(data["following_id"])
 
         if not token:
             return Response(
@@ -138,16 +140,18 @@ class FollowerView(APIView):
         follower_user = getUser(token)
         following_user = User.objects.get(pk=following_user_id)
         profile_follower = Profile.objects.filter(profile_user=follower_user)
-        profile_following = Profile.objects.filter(profile_user=follower_user)
+        profile_following = Profile.objects.filter(profile_user=following_user)
 
         query_set = Follower.objects.filter(
             follower=profile_follower, following=profile_following
         )
 
         serializer_data = {
-            "follower": profile_follower,
-            "following": profile_following,
+            "follower": profile_follower.first().pk,
+            "following": profile_following.first().pk,
         }
         serializer = FollowerSerializer(data=serializer_data)
+        if serializer.is_valid():
+            serializer.save()
 
-        # if serializer.is_valid():
+        return Response({"message: test"}, status=status.HTTP_200_OK)

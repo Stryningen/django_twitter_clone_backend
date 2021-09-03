@@ -25,7 +25,7 @@ class ProfileCreateSerializer(serializers.ModelSerializer):
 class FollowerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follower
-        fields = ["follwer", "following", "time_stamp"]
+        fields = ["follower", "following", "time_stamp"]
 
 
 class ProfileSerializer(serializers.ModelSerializer):
